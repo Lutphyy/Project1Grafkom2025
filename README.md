@@ -34,8 +34,7 @@ Setiap `data` berisi 3 angka yang mewakili nilai:
 
 ## 🔧 Teknologi yang Digunakan
 
-- HTML5 + CSS3
-- [Chart.js](https://www.chartjs.org/) untuk visualisasi grafik radar
+- HTML5 + CSS3 + 
 - Vanilla JavaScript (tanpa framework tambahan)
 
 ## 🔢 Cara Menjalankan

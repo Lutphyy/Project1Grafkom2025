@@ -1,214 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Radar Chart Mahasiswa</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-      margin: 0;
-    }
-
-    .chart-container {
-      width: 600px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
-
-    select {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .analysis-container {
-      width: 600px;
-      margin-top: 20px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .analysis-container ul {
-      padding-left: 20px;
-    }
-  </style>
+  <title>Radar Chart</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <h2>Radar Nilai Mahasiswa</h2>
-
-  <label for="pageSelector">Pilih Halaman Mahasiswa:</label>
-  <select id="pageSelector"></select>
-
-  <div class="chart-container">
-    <canvas id="radarChart"></canvas>
+  <div class="container">
+    <h1>Perbandingan Nilai Tugas, UTS dan UAS Mahasiswa</h1>
+    <canvas id="radarChart" width="600" height="600"></canvas>
+    <div class="controls">
+      <button onclick="prevPage()">previous</button>
+      <button onclick="nextPage()">next</button>
+    </div>
+    <div id="analysis" class="analysis"></div>
+    <div id="summary" class="summary"></div>
   </div>
-
-  <div class="analysis-container">
-    <h3>Analisis Keunggulan & Kelemahan</h3>
-    <ul id="analysisList"></ul>
-  </div>
-
-  <script>
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    const perPage = 10;
-    const labels = ['Tugas', 'UTS', 'UAS'];
-
-    const allMahasiswa = [
-      { label: "2101020014", data: [56, 50, 70] },
-      { label: "2101020024", data: [39, 50, 85] },
-      { label: "2101020048", data: [66, 70, 49] },
-      { label: "2101020058", data: [89, 40, 70] },
-      { label: "2101020074", data: [59, 60, 69] },
-      { label: "2101020092", data: [59, 60, 49] },
-      { label: "2101020103", data: [40, 0, 34] },
-      { label: "2101020104", data: [40, 50, 65] },
-      { label: "2101020117", data: [60, 60, 65] },
-      { label: "2201020001", data: [50, 80, 69] },
-      { label: "2201020002", data: [70, 80, 85] },
-      { label: "2201020010", data: [80, 80, 85] },
-      { label: "2201020014", data: [97.5, 80, 85] },
-      { label: "2201020015", data: [70, 80, 70] },
-      { label: "2201020018", data: [30, 70, 69] },
-      { label: "2201020019", data: [100, 70, 70] },
-      { label: "2201020022", data: [70, 80, 53] },
-      { label: "2201020026", data: [70, 80, 85] },
-      { label: "2201020032", data: [79.5, 60, 53] },
-      { label: "2201020039", data: [60, 80, 53] },
-      { label: "2201020041", data: [100, 70, 70] },
-      { label: "2201020047", data: [70, 60, 49] },
-      { label: "2201020048", data: [80, 80, 70] },
-      { label: "2201020057", data: [79, 70, 53] },
-      { label: "2201020063", data: [86, 70, 69] },
-      { label: "2201020065", data: [80, 70, 79] },
-      { label: "2201020066", data: [80, 70, 69] },
-      { label: "2201020067", data: [99.5, 70, 53] },
-      { label: "2201020070", data: [70, 70, 79] },
-      { label: "2201020074", data: [70, 50, 69] },
-      { label: "2201020075", data: [100, 70, 69] },
-      { label: "2201020083", data: [68, 70, 69] },
-      { label: "2201020086", data: [50, 0, 0] },
-      { label: "2201020090", data: [99.5, 70, 70] },
-      { label: "2201020091", data: [100, 60, 68] },
-      { label: "2201020092", data: [79.5, 80, 69] },
-      { label: "2201020093", data: [70, 70, 69] },
-      { label: "2201020094", data: [100, 70, 53] },
-      { label: "2201020095", data: [79.5, 70, 69] },
-      { label: "2201020098", data: [30, 80, 85] },
-      { label: "2201020099", data: [79, 80, 85] },
-      { label: "2201020100", data: [79, 80, 70] },
-      { label: "2201020103", data: [96, 80, 70] },
-      { label: "2201020104", data: [79, 80, 70] },
-      { label: "2201020105", data: [79.5, 80, 85] },
-      { label: "2201020106", data: [70, 70, 70] },
-      { label: "2201020109", data: [79.5, 80, 70] },
-      { label: "2201020112", data: [60, 80, 68] },
-      { label: "2201020116", data: [69, 70, 53] },
-      { label: "2201020117", data: [57, 80, 69] },
-      { label: "2201020118", data: [69, 80, 85] },
-      { label: "2201020122", data: [70, 70, 70] },
-      { label: "2201020123", data: [70, 70, 68] }
-    ];
-
-    const randomColor = () => {
-      const r = Math.floor(Math.random() * 200) + 30;
-      const g = Math.floor(Math.random() * 200) + 30;
-      const b = Math.floor(Math.random() * 200) + 30;
-      return `rgb(${r},${g},${b})`;
-    };
-
-    function getDatasetSlice(page) {
-      const start = page * perPage;
-      return allMahasiswa.slice(start, start + perPage).map(entry => ({
-        ...entry,
-        fill: false,
-        borderColor: randomColor(),
-        borderWidth: 1,
-        pointRadius: 0
-      }));
-    }
-
-    function generateAnalysis(datasetSlice) {
-      const ul = document.getElementById('analysisList');
-      ul.innerHTML = '';
-
-      datasetSlice.forEach(entry => {
-        const maxIndex = entry.data.indexOf(Math.max(...entry.data));
-        const minIndex = entry.data.indexOf(Math.min(...entry.data));
-        const li = document.createElement('li');
-        li.textContent = `NIM ${entry.label} unggul di "${labels[maxIndex]}", lemah di "${labels[minIndex]}"`;
-        ul.appendChild(li);
-      });
-    }
-
-    const config = {
-      type: 'radar',
-      data: {
-        labels: labels,
-        datasets: getDatasetSlice(0)
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        elements: {
-          line: { borderWidth: 1 },
-          point: { radius: 0 }
-        },
-        scales: {
-          r: {
-            angleLines: { display: true },
-            suggestedMin: 0,
-            suggestedMax: 100,
-            grid: { display: false },
-            ticks: { display: false },
-            pointLabels: { font: { size: 14 } }
-          }
-        }
-      }
-    };
-
-    const radarChart = new Chart(ctx, config);
-
-    const totalPages = Math.ceil(allMahasiswa.length / perPage);
-    const pageSelector = document.getElementById('pageSelector');
-
-    for (let i = 0; i < totalPages; i++) {
-      const option = document.createElement('option');
-      option.value = i;
-      option.textContent = `Mahasiswa ${i * perPage + 1} - ${Math.min((i + 1) * perPage, allMahasiswa.length)}`;
-      pageSelector.appendChild(option);
-    }
-
-    function updatePage(page) {
-      const rawData = allMahasiswa.slice(page * perPage, (page + 1) * perPage);
-      radarChart.data.datasets = getDatasetSlice(page);
-      radarChart.update();
-      generateAnalysis(rawData);
-    }
-
-    updatePage(0);
-
-    pageSelector.addEventListener('change', (e) => {
-      updatePage(parseInt(e.target.value));
-    });
-  </script>
+  
+  <script src="script.js"></script>
 </body>
-
 </html>
