@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bubble Chart dengan Pagination, Collision Detection, dan Warna Dinamis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="chartContainer">
+    <h2>Bubble Chart: Hubungan CPMK dengan Nilai Akhir</h2>
+    <canvas id="bubbleChart" width="800" height="600"></canvas>
+    <div id="legend">
+      <p><strong>Legenda:</strong></p>
+      <ul>
+        <li><strong>Sumbu X:</strong> Rata-rata Nilai CPMK</li>
+        <li><strong>Sumbu Y:</strong> Nilai Akhir</li>
+        <li><strong>Ukuran Bubble:</strong> Total Nilai Mahasiswa</li>
+        <li><strong>Warna:</strong>
+          <ul>
+            <li>Hijau: Nilai Akhir > 80</li>
+            <li>Kuning: Nilai Akhir 60–80</li>
+            <li>Merah: Nilai Akhir < 60</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="pagination">
+      <button id="prevBtn">Prev</button>
+      <span id="pageIndicator"></span>
+      <button id="nextBtn">Next</button>
+    </div>
+  </div>
+  <!-- Tooltip untuk interaksi -->
+  <div id="tooltip"></div>
+  <script src="script.js"></script>
+</body>
+</html>
