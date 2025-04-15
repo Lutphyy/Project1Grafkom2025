@@ -1,190 +1,212 @@
-const canvas = document.getElementById("radarChart");
-const ctx = canvas.getContext("2d");
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-const radius = 200;
-const maxValue = 100;
-const labels = ["Tugas", "UTS", "UAS"];
-const colors = [
-  "#FF6384",
-  "#36A2EB",
-  "#FFCE56",
-  "#8E44AD",
-  "#27AE60",
-  "#D35400",
-  "#2C3E50",
-  "#16A085",
-  "#E67E22",
-  "#2980B9",
+// Data mahasiswa (No 1 - 53) dengan nilai CPMK012, CPMK031, CPMK071, CPMK072
+const mahasiswaData = [
+  { id: "2101020014", cpmk012: 100, cpmk031: 90,  cpmk071: 100, cpmk072: 100 },
+  { id: "2101020024", cpmk012: 100, cpmk031: 20,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2101020048", cpmk012: 100, cpmk031: 90,  cpmk071: 100, cpmk072: 100 },
+  { id: "2101020058", cpmk012: 100, cpmk031: 90,  cpmk071: 100, cpmk072: 100 },
+  { id: "2101020074", cpmk012: 90,  cpmk031: 60,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2101020092", cpmk012: 100, cpmk031: 20,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2101020103", cpmk012: 0,   cpmk031: 0,   cpmk071: 0,   cpmk072: 0   },
+  { id: "2101020104", cpmk012: 90,  cpmk031: 60,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2101020117", cpmk012: 90,  cpmk031: 60,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020001", cpmk012: 100, cpmk031: 60,  cpmk071: 60,  cpmk072: 60  },
+  { id: "2201020002", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020010", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020014", cpmk012: 100, cpmk031: 60,  cpmk071: 60,  cpmk072: 60  },
+  { id: "2201020015", cpmk012: 100, cpmk031: 60,  cpmk071: 60,  cpmk072: 60  },
+  { id: "2201020018", cpmk012: 100, cpmk031: 70,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020019", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020022", cpmk012: 90,  cpmk031: 20,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020026", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020032", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020039", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020041", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020047", cpmk012: 100, cpmk031: 75,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020048", cpmk012: 100, cpmk031: 70,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020057", cpmk012: 100, cpmk031: 75,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020063", cpmk012: 100, cpmk031: 76,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020065", cpmk012: 100, cpmk031: 75,  cpmk071: 85,  cpmk072: 85  },
+  { id: "2201020066", cpmk012: 100, cpmk031: 60,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020067", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020070", cpmk012: 100, cpmk031: 75,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020074", cpmk012: 100, cpmk031: 60,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020075", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020083", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020086", cpmk012: 0,   cpmk031: 0,   cpmk071: 0,   cpmk072: 0   },
+  { id: "2201020090", cpmk012: 100, cpmk031: 75,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020091", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020092", cpmk012: 100, cpmk031: 60,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020093", cpmk012: 100, cpmk031: 75,  cpmk071: 85,  cpmk072: 85  },
+  { id: "2201020094", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020095", cpmk012: 100, cpmk031: 75,  cpmk071: 85,  cpmk072: 85  },
+  { id: "2201020098", cpmk012: 100, cpmk031: 75,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020099", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020100", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020103", cpmk012: 100, cpmk031: 70,  cpmk071: 100, cpmk072: 100 },
+  { id: "2201020104", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020105", cpmk012: 100, cpmk031: 70,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020106", cpmk012: 90,  cpmk031: 50,  cpmk071: 40,  cpmk072: 40  },
+  { id: "2201020109", cpmk012: 100, cpmk031: 80,  cpmk071: 70,  cpmk072: 70  },
+  { id: "2201020112", cpmk012: 90,  cpmk031: 50,  cpmk071: 40,  cpmk072: 40  },
+  { id: "2201020116", cpmk012: 90,  cpmk031: 50,  cpmk071: 40,  cpmk072: 40  },
+  { id: "2201020117", cpmk012: 100, cpmk031: 70,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020118", cpmk012: 100, cpmk031: 80,  cpmk071: 90,  cpmk072: 90  },
+  { id: "2201020122", cpmk012: 100, cpmk031: 70,  cpmk071: 50,  cpmk072: 50  },
+  { id: "2201020123", cpmk012: 90,  cpmk031: 20,  cpmk071: 50,  cpmk072: 50  }
 ];
 
-const data = {
-  2101020014: { Tugas: 56, UTS: 50, UAS: 70 },
-  2101020024: { Tugas: 39, UTS: 50, UAS: 85 },
-  2101020048: { Tugas: 66, UTS: 70, UAS: 49 },
-  2101020058: { Tugas: 89, UTS: 40, UAS: 70 },
-  2101020074: { Tugas: 59, UTS: 60, UAS: 69 },
-  2101020092: { Tugas: 59, UTS: 60, UAS: 49 },
-  2101020103: { Tugas: 40, UTS: 0, UAS: 34 },
-  2101020104: { Tugas: 40, UTS: 50, UAS: 65 },
-  2101020117: { Tugas: 60, UTS: 60, UAS: 65 },
-  2201020001: { Tugas: 50, UTS: 80, UAS: 69 },
-  2201020002: { Tugas: 70, UTS: 80, UAS: 85 },
-  2201020010: { Tugas: 80, UTS: 80, UAS: 85 },
-  2201020014: { Tugas: 97.5, UTS: 80, UAS: 85 },
-  2201020015: { Tugas: 70, UTS: 80, UAS: 70 },
-  2201020018: { Tugas: 30, UTS: 70, UAS: 69 },
-  2201020019: { Tugas: 100, UTS: 70, UAS: 70 },
-  2201020022: { Tugas: 70, UTS: 80, UAS: 53 },
-  2201020026: { Tugas: 70, UTS: 80, UAS: 85 },
-  2201020032: { Tugas: 79.5, UTS: 60, UAS: 53 },
-  2201020039: { Tugas: 60, UTS: 80, UAS: 53 },
-  2201020041: { Tugas: 100, UTS: 70, UAS: 70 },
-  2201020047: { Tugas: 70, UTS: 60, UAS: 49 },
-  2201020048: { Tugas: 80, UTS: 80, UAS: 70 },
-  2201020057: { Tugas: 79, UTS: 70, UAS: 53 },
-  2201020063: { Tugas: 86, UTS: 70, UAS: 69 },
-  2201020065: { Tugas: 80, UTS: 70, UAS: 79 },
-  2201020066: { Tugas: 80, UTS: 70, UAS: 69 },
-  2201020067: { Tugas: 99.5, UTS: 70, UAS: 53 },
-  2201020070: { Tugas: 70, UTS: 70, UAS: 79 },
-  2201020074: { Tugas: 70, UTS: 50, UAS: 69 },
-  2201020075: { Tugas: 100, UTS: 70, UAS: 69 },
-  2201020083: { Tugas: 68, UTS: 70, UAS: 69 },
-  2201020086: { Tugas: 50, UTS: 0, UAS: 0 },
-  2201020090: { Tugas: 99.5, UTS: 70, UAS: 70 },
-  2201020091: { Tugas: 100, UTS: 60, UAS: 68 },
-  2201020092: { Tugas: 79.5, UTS: 80, UAS: 69 },
-  2201020093: { Tugas: 70, UTS: 70, UAS: 69 },
-  2201020094: { Tugas: 100, UTS: 70, UAS: 53 },
-  2201020095: { Tugas: 79.5, UTS: 70, UAS: 69 },
-  2201020098: { Tugas: 30, UTS: 80, UAS: 85 },
-  2201020099: { Tugas: 79, UTS: 80, UAS: 85 },
-  2201020100: { Tugas: 79, UTS: 80, UAS: 70 },
-  2201020103: { Tugas: 96, UTS: 80, UAS: 70 },
-  2201020104: { Tugas: 79, UTS: 80, UAS: 70 },
-  2201020105: { Tugas: 79.5, UTS: 80, UAS: 85 },
-  2201020106: { Tugas: 70, UTS: 70, UAS: 70 },
-  2201020109: { Tugas: 79.5, UTS: 80, UAS: 70 },
-  2201020112: { Tugas: 60, UTS: 80, UAS: 68 },
-  2201020116: { Tugas: 69, UTS: 70, UAS: 53 },
-  2201020117: { Tugas: 57, UTS: 80, UAS: 69 },
-  2201020118: { Tugas: 69, UTS: 80, UAS: 85 },
-  2201020122: { Tugas: 70, UTS: 70, UAS: 70 },
-  2201020123: { Tugas: 70, UTS: 70, UAS: 68 },
+// Fungsi untuk menentukan indeks rentang nilai (bin)
+function getBin(value) {
+  if (value <= 50) return 0;
+  else if (value <= 70) return 1;
+  else if (value <= 90) return 2;
+  else return 3;
+}
+
+// Inisialisasi array distribusi untuk tiap CPMK
+const distribusiCPMK012 = [0, 0, 0, 0];
+const distribusiCPMK031 = [0, 0, 0, 0];
+const distribusiCPMK071 = [0, 0, 0, 0];
+const distribusiCPMK072 = [0, 0, 0, 0];
+
+// Hitung distribusi nilai berdasarkan rentang
+mahasiswaData.forEach(item => {
+  distribusiCPMK012[getBin(item.cpmk012)]++;
+  distribusiCPMK031[getBin(item.cpmk031)]++;
+  distribusiCPMK071[getBin(item.cpmk071)]++;
+  distribusiCPMK072[getBin(item.cpmk072)]++;
+});
+
+// Rentang nilai yang digunakan sebagai label sumbu X
+const labels = ["0-50", "51-70", "71-90", "91-100"];
+
+// Warna untuk masing-masing dataset
+const colors = {
+  cpmk012: "rgba(255, 99, 132, 0.8)",   // Merah
+  cpmk031: "rgba(54, 162, 235, 0.8)",    // Biru
+  cpmk071: "rgba(255, 206, 86, 0.8)",    // Kuning
+  cpmk072: "rgba(75, 192, 192, 0.8)"     // Hijau
 };
 
-let mahasiswaList = Object.entries(data);
-let currentPage = 0;
-const pageSize = 10;
+// Setting canvas dan context
+const canvas = document.getElementById("histogramChart");
+const ctx = canvas.getContext("2d");
 
-function polarToCartesian(cx, cy, r, angle) {
-  return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
-}
+// Margin dan ukuran area grafik
+const margin = { top: 40, right: 30, bottom: 60, left: 60 };
+const chartWidth = canvas.width - margin.left - margin.right;
+const chartHeight = canvas.height - margin.top - margin.bottom;
 
-function drawAxes() {
-  ctx.strokeStyle = "#aaa";
-  ctx.lineWidth = 1;
-  labels.forEach((label, i) => {
-    const angle = ((Math.PI * 2) / labels.length) * i;
-    const [x, y] = polarToCartesian(centerX, centerY, radius + 20, angle);
-    const [lx, ly] = polarToCartesian(centerX, centerY, radius, angle);
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(lx, ly);
-    ctx.stroke();
-    ctx.fillText(label, x, y);
-  });
-}
+// Tentukan jumlah dataset (4) dan jumlah bin (4)
+const numDatasets = 4;
+const numBins = labels.length;
 
-function drawPolygon(values, color) {
+// Tentukan lebar tiap bar dan jarak antar bar dalam grup
+const barWidth = 20;
+const barGap = 5;
+const groupGap = 40;
+
+// Tentukan skala untuk sumbu Y berdasarkan nilai maksimum
+const maxCount = Math.max(
+  ...distribusiCPMK012,
+  ...distribusiCPMK031,
+  ...distribusiCPMK071,
+  ...distribusiCPMK072
+);
+const yScale = chartHeight / (maxCount + 2); // +2 sebagai ruang atas
+
+// Fungsi untuk menggambar garis
+function drawLine(ctx, x1, y1, x2, y2, color = "black", width = 1) {
   ctx.beginPath();
-  values.forEach((value, i) => {
-    const angle = ((Math.PI * 2) / labels.length) * i;
-    const r = (value / maxValue) * radius;
-    const [x, y] = polarToCartesian(centerX, centerY, r, angle);
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
-  ctx.closePath();
-  ctx.fillStyle = color;
-  ctx.globalAlpha = 0.3;
-  ctx.fill();
-  ctx.globalAlpha = 1;
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
   ctx.strokeStyle = color;
+  ctx.lineWidth = width;
   ctx.stroke();
 }
 
-function analyzeStudent(score) {
-  let max = -1,
-    min = 101,
-    maxKey = "",
-    minKey = "";
-  for (let key in score) {
-    if (score[key] > max) {
-      max = score[key];
-      maxKey = key;
+// Mulai menggambar grafik
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// Gambar sumbu X dan Y
+const originX = margin.left;
+const originY = canvas.height - margin.bottom;
+drawLine(ctx, originX, margin.top, originX, originY); // sumbu Y
+drawLine(ctx, originX, originY, canvas.width - margin.right, originY); // sumbu X
+
+// Tambahkan label sumbu Y
+ctx.font = "14px sans-serif";
+ctx.fillStyle = "black";
+ctx.textAlign = "right";
+ctx.textBaseline = "middle";
+for (let i = 0; i <= maxCount + 2; i++) {
+  const yPos = originY - i * yScale;
+  ctx.fillText(i, originX - 5, yPos);
+}
+
+// Tambahkan label sumbu X dan garis vertikal untuk tiap bin
+ctx.textAlign = "center";
+labels.forEach((label, i) => {
+  // Posisi tengah grup tiap bin
+  const groupX = originX + groupGap/2 + i * (numDatasets * (barWidth + barGap) + groupGap);
+  ctx.fillText(label, groupX + (numDatasets * (barWidth + barGap) - barGap)/2, originY + 20);
+  // Gambar garis vertikal tipis pada tiap bin (opsional)
+  drawLine(ctx, groupX, originY, groupX, margin.top, "#ddd", 1);
+});
+
+// Fungsi untuk menggambar sebuah bar
+function drawBar(x, y, width, height, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, width, height);
+}
+
+// Data distribusi tiap dataset dalam sebuah array untuk memudahkan iterasi
+const datasets = [
+  { data: distribusiCPMK012, color: colors.cpmk012 },
+  { data: distribusiCPMK031, color: colors.cpmk031 },
+  { data: distribusiCPMK071, color: colors.cpmk071 },
+  { data: distribusiCPMK072, color: colors.cpmk072 }
+];
+
+// Gambar bar untuk tiap kelompok (grouped bar chart)
+labels.forEach((label, binIndex) => {
+  // Hitung posisi awal grup untuk bin ini
+  const groupStartX = originX + groupGap + binIndex * (numDatasets * (barWidth + barGap) + groupGap);
+  // Untuk tiap dataset, gambar bar dalam grup
+  datasets.forEach((dataset, dsIndex) => {
+    const count = dataset.data[binIndex];
+    const barHeight = count * yScale;
+    // Posisi X untuk bar dataset ke-dsIndex pada grup ini
+    const x = groupStartX + dsIndex * (barWidth + barGap);
+    const y = originY - barHeight;
+    drawBar(x, y, barWidth, barHeight, dataset.color);
+    // Tuliskan nilai count di atas bar (jika cukup tinggi)
+    if (barHeight > 15) {
+      ctx.fillStyle = "black";
+      ctx.font = "12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(count, x + barWidth/2, y - 5);
     }
-    if (score[key] < min) {
-      min = score[key];
-      minKey = key;
-    }
-  }
-  return `Mahasiswa ini kuat di bagian ${maxKey}, tetapi lemah di ${minKey}.`;
-}
-
-function drawChart() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawAxes();
-  document.getElementById("analysis").innerHTML = "";
-  const slice = mahasiswaList.slice(
-    currentPage * pageSize,
-    (currentPage + 1) * pageSize
-  );
-  slice.forEach(([nim, scores], idx) => {
-    const values = labels.map((k) => scores[k]);
-    const color = colors[idx % colors.length];
-    drawPolygon(values, color);
-    ctx.fillStyle = color;
-    ctx.fillText(`${nim} → warna ${color}`, 10, 20 + idx * 20);
-    const result = analyzeStudent(scores);
-    document.getElementById(
-      "analysis"
-    ).innerHTML += `<p><strong>${nim}</strong>: ${result}</p>`;
   });
-}
+});
 
-function nextPage() {
-  if ((currentPage + 1) * pageSize < mahasiswaList.length) {
-    currentPage++;
-    drawChart();
-  }
-}
+// Judul grafik
+ctx.font = "18px sans-serif";
+ctx.fillStyle = "black";
+ctx.textAlign = "center";
+ctx.fillText("Histogram Distribusi Nilai CPMK", canvas.width/2, margin.top/2);
 
-function prevPage() {
-  if (currentPage > 0) {
-    currentPage--;
-    drawChart();
-  }
-}
-
-function summaryRanking() {
-  const total = { Tugas: [], UTS: [], UAS: [] };
-  mahasiswaList.forEach(([nim, scores]) => {
-    labels.forEach((k) => total[k].push({ nim, nilai: scores[k] }));
-  });
-
-  let summaryHTML = "<hr><h3>Rekapitulasi Keseluruhan</h3>";
-
-  labels.forEach((label) => {
-    const sorted = total[label].sort((a, b) => b.nilai - a.nilai);
-    const tertinggi = sorted[0];
-    const terendah = sorted[sorted.length - 1];
-    summaryHTML += `<p><strong>${label}</strong>: Tertinggi → ${tertinggi.nim} (${tertinggi.nilai}), Terendah → ${terendah.nim} (${terendah.nilai})</p>`;
-  });
-
-  document.getElementById("summary").innerHTML = summaryHTML;
-}
-
-drawChart();
-summaryRanking();
+// Legenda sederhana
+const legendX = canvas.width - margin.right - 150;
+const legendY = margin.top;
+const legendGap = 20;
+datasets.forEach((dataset, i) => {
+  // Kotak warna
+  ctx.fillStyle = dataset.color;
+  ctx.fillRect(legendX, legendY + i * legendGap, 15, 15);
+  // Label
+  ctx.fillStyle = "black";
+  ctx.font = "14px sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText(["CPMK 012", "CPMK 031", "CPMK 071", "CPMK 072"][i], legendX + 20, legendY + i * legendGap + 12);
+});
